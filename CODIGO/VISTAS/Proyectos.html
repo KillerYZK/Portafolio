@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Proyectos | Mi Portafolio</title>
+  <link rel="stylesheet" href="../DISEÑO/Style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+  <!-- ── NAVBAR ── -->
+  <nav class="navbar">
+    <div class="nav-logo">
+      <span class="logo-bracket">&lt;</span>KYZK<span class="logo-bracket">/&gt;</span>  <!-- ── PRESENTACION ── -->
+    </div>
+    <ul class="nav-links">
+      <li><a href="Index.html"       class="nav-btn">Inicio</a></li>
+      <li><a href="QuienSoy.html"    class="nav-btn">¿Quién soy?</a></li>
+      <li><a href="Habilidades.html" class="nav-btn">Habilidades</a></li>
+      <li><a href="Proyectos.html"   class="nav-btn active">Proyectos</a></li>
+      <li><a href="Contacto.html"    class="nav-btn">Contacto</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
+  </nav>
+
+  <!-- ── CONTENIDO ── -->
+  <main class="main-content">
+    <section class="section active">
+      <div class="section-header">
+        <h2>Mis <span class="red">proyectos</span></h2>
+        <div class="underline-red"></div>
+      </div>
+
+      <div class="projects-grid" id="projects-grid">
+        <p class="github-loading"><i class="fas fa-spinner fa-spin"></i> Cargando repositorios...</p>
+      </div>
+      
+      <!-- LA MAGIA -->
+      <script>
+        const GITHUB_USER = 'KillerYZK';
+
+        fetch(`https://api.github.com/users/${GITHUB_USER}/repos?sort=updated&per_page=12`)
+          .then(res => res.json())
+          .then(repos => {
+            const grid = document.getElementById('projects-grid');
+            grid.innerHTML = '';
+
+            if (!repos || repos.length === 0) {
+              grid.innerHTML = '<p class="github-loading">No se encontraron repositorios.</p>';
+              return;
+            }
+
+            repos.forEach(repo => {
+              const lang = repo.language || 'Sin lenguaje';
+              const desc = repo.description || 'Sin descripción.';
+              const page = repo.homepage ? `<a href="${repo.homepage}" target="_blank" title="Demo"><i class="fas fa-external-link-alt"></i></a>` : '';
+
+              grid.innerHTML += `
+                <div class="project-card">
+                  <div class="project-top">
+                    <i class="fas fa-folder-open project-icon"></i>
+                    <div class="project-links">
+                      <a href="${repo.html_url}" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                      ${page}
+                    </div>
+                  </div>
+                  <h3 class="project-title">${repo.name}</h3>
+                  <p class="project-desc">${desc}</p>
+                  <div class="project-tags">
+                    <span>${lang}</span>
+                    ${repo.stargazers_count > 0 ? `<span>⭐ ${repo.stargazers_count}</span>` : ''}
+                  </div>
+                </div>`;
+            });
+          })
+          .catch(() => {
+            document.getElementById('projects-grid').innerHTML =
+              '<p class="github-loading">Error al cargar repositorios. Verifica tu conexión.</p>';
+          });
+      </script>
+    </section>
+  </main>
+
+<!-- ── FOOTER ── -->
+  <footer class="footer">
+    <p>Esto es esto y eso es eso...<span class="red"> KYZK</span></p>
+  </footer>
+
+  <img src="../DISEÑO/GIFS/wil.gif" class="corner-gif" alt="gif" />
+  <script src="../BACKEND/Backend.js"></script>
+</body>
+</html>
